@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SST Manager - Gestão de Segurança e Saúde no Trabalho</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Variables */
+        :root {
+            --primary-navy: #1e3a5f;
+            --sidebar-hover: #2b527f;
+            --sidebar-active: #0ea5e9;
+            --background: #f4f6f8;
+            --card-bg: #ffffff;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --success-green: #22c55e;
+            --warning-orange: #f59e0b;
+            --danger-red: #ef4444;
+            --info-teal: #0ea5e9;
+            --border-color: #e5e7eb;
+            
+            --border-radius-card: 12px;
+            --border-radius-btn: 8px;
+            --shadow-card: 0 1px 3px rgba(0,0,0,0.08);
+            --transition-speed: 0.2s;
+        }
+
+        /* Reset & Base */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background);
+            color: var(--text-primary);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Accessibility */
+        :focus-visible {
+            outline: 2px solid var(--info-teal);
+            outline-offset: 2px;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--info-teal);
+            color: white;
+            padding: 8px;
+            z-index: 1000;
+            transition: top var(--transition-speed);
+        }
+        .skip-link:focus {
+            top: 0;
+        }
+
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        a {
+            color: var(--info-teal);
+            text-decoration: none;
+            transition: color var(--transition-speed);
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Layout */
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Screens */
+        .screen {
+            display: none;
+            width: 100%;
+            animation: fadeIn var(--transition-speed) ease-in-out;
+        }
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Screen 1: Login --- */
+        #screen-login {
+            height: 100vh;
+        }
+        .login-layout {
+            display: flex;
+            height: 100%;
+        }
+        .login-left {
+            flex: 1;
+            background: linear-gradient(135deg, var(--primary-navy) 0%, #112238 100%);
+            color: white;
+            padding: 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .login-left-content {
+            max-width: 480px;
+        }
+        .login-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .login-brand h1 {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        .login-tagline {
+            font-size: 1.25rem;
+            color: #cbd5e1;
+            margin-bottom: 3rem;
+        }
+        .feature-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.1rem;
+        }
+        .feature-icon {
+            background: rgba(255,255,255,0.1);
+            padding: 0.5rem;
+            border-radius: 50%;
+            display: flex;
+        }
+
+        .login-right {
+            flex: 1;
+            background: var(--card-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .login-form-container {
+            width: 100%;
+            max-width: 400px;
+        }
+        .login-form-container h2 {
+            font-size: 1.875rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+        .input-wrapper {
+            position: relative;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="date"],
+        input[type="tel"],
+        select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-btn);
+            font-family: inherit;
+            font-size: 1rem;
+            color: var(--text-primary);
+            background-color: var(--card-bg);
+            transition: border-color var(--transition-speed);
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--info-teal);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+        }
+        .toggle-password {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+        .forgot-password {
+            display: block;
+            text-align: right;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.65rem 1.5rem;
+            border-radius: var(--border-radius-btn);
+            font-weight: 500;
+            font-family: inherit;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            border: none;
+        }
+        .btn-primary {
+            background-color: var(--info-teal);
+            color: white;
+            width: 100%;
+            padding: 0.875rem;
+            font-size: 1.1rem;
+        }
+        .btn-primary:hover {
+            background-color: #0284c7;
+            text-decoration: none;
+        }
+        .btn-secondary {
+            background-color: white;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+        .btn-secondary:hover {
+            background-color: #f9fafb;
+        }
+        .btn-icon {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.875rem;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255,255,255,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .loading-overlay.active {
+            display: flex;
+        }
+        .spinner {
+            width: 40px; height: 40px;
+            border: 4px solid var(--border-color);
+            border-top-color: var(--info-teal);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+
+        /* --- Sidebar & Main Layout --- */
+        .sidebar {
+            width: 260px;
+            background-color: var(--primary-navy);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            left: -260px; /* Hidden initially if we are on login, but handled by class */
+            z-index: 100;
+            transition: left var(--transition-speed);
+        }
+        .sidebar.active {
+            left: 0;
+        }
+        
+        .sidebar-header {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .sidebar-header h2 {
+            color: white;
+            font-size: 1.25rem;
+            margin: 0;
+        }
+        
+        .sidebar-nav {
+            padding: 1rem 0;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            color: #cbd5e1;
+            text-decoration: none;
+            border-left: 4px solid transparent;
+            transition: all var(--transition-speed);
+            background: transparent;
+            width: 100%;
+            text-align: left;
+            font-family: inherit;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        .nav-link:hover:not(.disabled) {
+            background-color: var(--sidebar-hover);
+            color: white;
+            text-decoration: none;
+        }
+        .nav-link.active {
+            background-color: var(--sidebar-hover);
+            color: white;
+            border-left-color: var(--sidebar-active);
+        }
+        .nav-link.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 0;
+            padding: 2rem;
+            transition: margin-left var(--transition-speed);
+            display: none;
+        }
+        .main-content.active {
+            display: block;
+            margin-left: 260px; /* When sidebar is visible */
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        .top-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .top-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .company-badge {
+            background-color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            box-shadow: var(--shadow-card);
+            border: 1px solid var(--border-color);
+        }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-navy);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        /* --- Components --- */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-card);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-card);
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .kpi-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .kpi-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .kpi-icon.green { background-color: rgba(34, 197, 94, 0.1); color: var(--success-green); }
+        .kpi-icon.orange { background-color: rgba(245, 158, 11, 0.1); color: var(--warning-orange); }
+        .kpi-icon.red { background-color: rgba(239, 68, 68, 0.1); color: var(--danger-red); }
+        
+        .kpi-details h3 {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+        .kpi-details p {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .table-container {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-card);
+            box-shadow: var(--shadow-card);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+        .table-responsive {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        th, td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        th {
+            background-color: var(--primary-navy);
+            color: white;
+            font-weight: 500;
+            font-size: 0.875rem;
+            white-space: nowrap;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+        tbody tr:hover {
+            background-color: #f3f4f6;
+        }
+        td {
+            font-size: 0.875rem;
+            color: var(--text-primary);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .badge.green { background-color: rgba(34, 197, 94, 0.1); color: var(--success-green); }
+        .badge.orange { background-color: rgba(245, 158, 11, 0.1); color: var(--warning-orange); }
+        .badge.red { background-color: rgba(239, 68, 68, 0.1); color: var(--danger-red); }
+        .badge.gray { background-color: rgba(107, 114, 128, 0.1); color: var(--text-secondary); }
+
+        .section-header {
+            margin-bottom: 1rem;
+            font-size: 1.125rem;
+        }
+
+        /* Func Filter Bar */
+        .filter-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .filter-bar .input-wrapper {
+            flex: 1;
+            min-width: 200px;
+        }
+        .filter-bar select {
+            width: auto;
+            min-width: 150px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background: white;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        .pagination-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .btn-page {
+            padding: 0.25rem 0.75rem;
+            border: 1px solid var(--border-color);
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-page:hover {
+            background: #f3f4f6;
+        }
+
+        /* Forms */
+        fieldset {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            background: white;
+        }
+        legend {
+            font-weight: 600;
+            padding: 0 0.5rem;
+            color: var(--primary-navy);
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+        .required::after {
+            content: " *";
+            color: var(--danger-red);
+        }
+
+        /* --- Media Queries --- */
+        @media (max-width: 1024px) {
+            .kpi-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 768px) {
+            .login-layout {
+                flex-direction: column;
+            }
+            .login-left {
+                padding: 2rem;
+            }
+            .sidebar {
+                left: -260px;
+            }
+            .sidebar.mobile-open {
+                left: 0;
+            }
+            .main-content.active {
+                margin-left: 0;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 480px) {
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Pular para o conteúdo principal</a>
+
+    <div class="app-container">
+        <!-- Screen 1: Login -->
+        <div id="screen-login" class="screen active">
+            <div class="login-layout">
+                <div class="login-left">
+                    <div class="login-left-content">
+                        <div class="login-brand">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--info-teal)" stroke-width="2" aria-hidden="true">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                                <polyline points="9 12 11 14 15 10"/>
+                            </svg>
+                            <h1>SST Manager</h1>
+                        </div>
+                        <p class="login-tagline">Gestão de Segurança e Saúde no Trabalho</p>
+                        <ul class="feature-list">
+                            <li class="feature-item">
+                                <div class="feature-icon">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--info-teal)" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                </div>
+                                Controle de ASOs e vencimentos
+                            </li>
+                            <li class="feature-item">
+                                <div class="feature-icon">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--info-teal)" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                </div>
+                                Gestão de EPIs e CAs
+                            </li>
+                            <li class="feature-item">
+                                <div class="feature-icon">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--info-teal)" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                </div>
+                                Monitoramento de NRs e treinamentos
+                            </li>
+                            <li class="feature-item">
+                                <div class="feature-icon">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--info-teal)" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                </div>
+                                Emissão e controle de CATs
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="login-right">
+                    <div class="login-form-container">
+                        <h2>Acesse sua conta</h2>
+                        <form id="login-form" action="#" novalidate>
+                            <div class="form-group">
+                                <label for="empresa" class="required">Selecione sua empresa</label>
+                                <select id="empresa" name="empresa" required>
+                                    <option value="" disabled selected>Escolha uma empresa...</option>
+                                    <option value="Construtora ABC">Construtora ABC</option>
+                                    <option value="Metalúrgica XYZ">Metalúrgica XYZ</option>
+                                    <option value="Indústria Delta">Indústria Delta</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="email" class="required">E-mail</label>
+                                <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="password" class="required">Senha</label>
+                                <div class="input-wrapper">
+                                    <input type="password" id="password" name="password" placeholder="••••••••" required>
+                                    <button type="button" class="toggle-password" id="toggle-pwd" aria-label="Mostrar senha">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                                    </button>
+                                </div>
+                                <a href="#" class="forgot-password">Esqueci minha senha</a>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">Entrar</button>
+                            <div class="signup-link">
+                                Não tem conta? <a href="#">Cadastre-se</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar" aria-label="Menu principal">
+            <div class="sidebar-header">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+                <h2>SST Manager</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <button class="nav-link active" data-target="screen-dashboard" aria-current="page">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                    Dashboard
+                </button>
+                <button class="nav-link" data-target="screen-funcionarios">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    Funcionários
+                </button>
+                <button class="nav-link disabled" aria-disabled="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+                    Fichas de EPI
+                </button>
+                <button class="nav-link disabled" aria-disabled="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    ASOs
+                </button>
+                <button class="nav-link disabled" aria-disabled="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+                    NRs
+                </button>
+                <button class="nav-link disabled" aria-disabled="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                    CATs
+                </button>
+                <button class="nav-link disabled" aria-disabled="true" style="margin-top: auto;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    Configurações
+                </button>
+            </nav>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main id="main-content" class="main-content">
+            <!-- Header (shared for logged in screens) -->
+            <div id="shared-header" style="display:none;">
+                <div class="top-bar">
+                    <div class="top-bar-left">
+                        <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Abrir menu">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                        </button>
+                        <h1 id="page-title">Dashboard de SST</h1>
+                    </div>
+                    <div class="top-bar-right">
+                        <div class="company-badge" id="display-company">Empresa</div>
+                        <div class="user-avatar" aria-label="Usuário CL">CL</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Screen 2: Dashboard -->
+            <div id="screen-dashboard" class="screen">
+                <div class="kpi-grid">
+                    <div class="card kpi-card">
+                        <div class="kpi-icon green">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        </div>
+                        <div class="kpi-details">
+                            <h3>Funcionários Ativos</h3>
+                            <p>128</p>
+                        </div>
+                    </div>
+                    <div class="card kpi-card">
+                        <div class="kpi-icon orange">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                        </div>
+                        <div class="kpi-details">
+                            <h3>ASOs Vencendo (30 dias)</h3>
+                            <p>12</p>
+                        </div>
+                    </div>
+                    <div class="card kpi-card">
+                        <div class="kpi-icon red">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                        </div>
+                        <div class="kpi-details">
+                            <h3>CATs no Ano</h3>
+                            <p>3</p>
+                        </div>
+                    </div>
+                    <div class="card kpi-card">
+                        <div class="kpi-icon red">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                        </div>
+                        <div class="kpi-details">
+                            <h3>NRs Vencidas</h3>
+                            <p>2</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h2 class="section-header">Alertas Recentes</h2>
+                <div class="table-container">
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Funcionário</th>
+                                    <th scope="col">Tipo</th>
+                                    <th scope="col">Descrição</th>
+                                    <th scope="col">Vencimento</th>
+                                    <th scope="col">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Carlos Almeida</td>
+                                    <td>ASO</td>
+                                    <td>Exame Periódico</td>
+                                    <td>10/11/2023</td>
+                                    <td><span class="badge red">Urgente</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Juliana Costa</td>
+                                    <td>Treinamento</td>
+                                    <td>NR-35 Trabalho em Altura</td>
+                                    <td>25/11/2023</td>
+                                    <td><span class="badge orange">Atenção</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Roberto Nunes</td>
+                                    <td>EPI</td>
+                                    <td>Troca de Botina</td>
+                                    <td>02/12/2023</td>
+                                    <td><span class="badge orange">Atenção</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Amanda Silva</td>
+                                    <td>ASO</td>
+                                    <td>Exame Periódico</td>
+                                    <td>15/12/2023</td>
+                                    <td><span class="badge green">Em dia</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Fernando Souza</td>
+                                    <td>Treinamento</td>
+                                    <td>NR-10 Segurança Eletricidade</td>
+                                    <td>20/12/2023</td>
+                                    <td><span class="badge green">Em dia</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Screen 3: Funcionários -->
+            <div id="screen-funcionarios" class="screen">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 1.5rem;">
+                    <h2 class="sr-only">Lista de Funcionários</h2>
+                    <button class="btn btn-primary btn-icon" id="btn-novo-func">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        Novo Funcionário
+                    </button>
+                </div>
+
+                <div class="filter-bar">
+                    <div class="input-wrapper">
+                        <label for="search-func" class="sr-only">Buscar por nome ou CPF</label>
+                        <input type="text" id="search-func" placeholder="Buscar por nome ou CPF...">
+                    </div>
+                    <div class="input-wrapper">
+                        <label for="filter-setor" class="sr-only">Setor</label>
+                        <select id="filter-setor">
+                            <option value="Todos">Setor: Todos</option>
+                            <option value="Produção">Produção</option>
+                            <option value="Administrativo">Administrativo</option>
+                            <option value="Engenharia">Engenharia</option>
+                        </select>
+                    </div>
+                    <div class="input-wrapper">
+                        <label for="filter-status" class="sr-only">Status</label>
+                        <select id="filter-status">
+                            <option value="Todos">Status: Todos</option>
+                            <option value="Ativo">Ativo</option>
+                            <option value="Inativo">Inativo</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nome</th>
+                                    <th scope="col">CPF</th>
+                                    <th scope="col">Cargo</th>
+                                    <th scope="col">Setor</th>
+                                    <th scope="col">Admissão</th>
+                                    <th scope="col">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Carlos Almeida</td>
+                                    <td>123.456.789-00</td>
+                                    <td>Soldador</td>
+                                    <td>Produção</td>
+                                    <td>15/03/2019</td>
+                                    <td><span class="badge green">Ativo</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Juliana Costa</td>
+                                    <td>987.654.321-11</td>
+                                    <td>Assistente Administrativo</td>
+                                    <td>Administrativo</td>
+                                    <td>10/01/2021</td>
+                                    <td><span class="badge green">Ativo</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Roberto Nunes</td>
+                                    <td>456.789.123-22</td>
+                                    <td>Engenheiro Eletricista</td>
+                                    <td>Engenharia</td>
+                                    <td>05/06/2018</td>
+                                    <td><span class="badge green">Ativo</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Amanda Silva</td>
+                                    <td>789.123.456-33</td>
+                                    <td>Operadora de Máquinas</td>
+                                    <td>Produção</td>
+                                    <td>22/08/2022</td>
+                                    <td><span class="badge green">Ativo</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Fernando Souza</td>
+                                    <td>321.654.987-44</td>
+                                    <td>Técnico de Segurança</td>
+                                    <td>Administrativo</td>
+                                    <td>11/11/2020</td>
+                                    <td><span class="badge green">Ativo</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Marcos Pereira</td>
+                                    <td>111.222.333-55</td>
+                                    <td>Auxiliar de Produção</td>
+                                    <td>Produção</td>
+                                    <td>01/02/2023</td>
+                                    <td><span class="badge green">Ativo</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Patrícia Lima</td>
+                                    <td>444.555.666-77</td>
+                                    <td>Analista de RH</td>
+                                    <td>Administrativo</td>
+                                    <td>14/05/2017</td>
+                                    <td><span class="badge gray">Inativo</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Thiago Santos</td>
+                                    <td>777.888.999-88</td>
+                                    <td>Mestre de Obras</td>
+                                    <td>Engenharia</td>
+                                    <td>20/09/2015</td>
+                                    <td><span class="badge gray">Inativo</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="pagination">
+                        <span>Mostrando 1-8 de 45 funcionários</span>
+                        <div class="pagination-controls">
+                            <button class="btn-page" aria-label="Página anterior" disabled>Anterior</button>
+                            <button class="btn-page" aria-label="Próxima página">Próxima</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Screen 4: Formulário -->
+            <div id="screen-form" class="screen">
+                <div style="margin-bottom: 1.5rem;">
+                    <a href="#" id="btn-voltar-func" style="display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 500; margin-bottom: 1rem;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                        Voltar
+                    </a>
+                </div>
+
+                <form id="new-func-form" action="#" novalidate>
+                    <fieldset>
+                        <legend>Dados Pessoais</legend>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="nome" class="required">Nome Completo</label>
+                                <input type="text" id="nome" name="nome" placeholder="Ex: João da Silva" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="cpf" class="required">CPF</label>
+                                <input type="text" id="cpf" name="cpf" placeholder="XXX.XXX.XXX-XX" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="nascimento" class="required">Data de Nascimento</label>
+                                <input type="date" id="nascimento" name="nascimento" required>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>Dados Profissionais</legend>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="matricula" class="required">Matrícula</label>
+                                <input type="text" id="matricula" name="matricula" placeholder="Ex: 12345" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="cargo" class="required">Cargo</label>
+                                <select id="cargo" name="cargo" required>
+                                    <option value="" disabled selected>Selecione o cargo</option>
+                                    <option value="Soldador">Soldador</option>
+                                    <option value="Assistente Administrativo">Assistente Administrativo</option>
+                                    <option value="Engenheiro Eletricista">Engenheiro Eletricista</option>
+                                    <option value="Operador de Máquinas">Operador de Máquinas</option>
+                                    <option value="Técnico de Segurança">Técnico de Segurança</option>
+                                    <option value="Auxiliar de Produção">Auxiliar de Produção</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="setor" class="required">Setor</label>
+                                <select id="setor" name="setor" required>
+                                    <option value="" disabled selected>Selecione o setor</option>
+                                    <option value="Produção">Produção</option>
+                                    <option value="Administrativo">Administrativo</option>
+                                    <option value="Engenharia">Engenharia</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="admissao" class="required">Data de Admissão</label>
+                                <input type="date" id="admissao" name="admissao" required>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>Contato</legend>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="email_func">E-mail Corporativo</label>
+                                <input type="email" id="email_func" name="email_func" placeholder="email@empresa.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="telefone">Telefone / Celular</label>
+                                <input type="tel" id="telefone" name="telefone" placeholder="(XX) XXXXX-XXXX">
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="btn-cancelar-func">Cancelar</button>
+                        <button type="button" class="btn btn-primary" id="btn-salvar-func" style="width: auto;">Salvar Funcionário</button>
+                    </div>
+                </form>
+            </div>
+            
+        </main>
+    </div>
+
+    <!-- Loading overlay -->
+    <div class="loading-overlay" id="loading-overlay" role="alert" aria-busy="true">
+        <div class="spinner"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Elements
+            const loginForm = document.getElementById('login-form');
+            const empSelect = document.getElementById('empresa');
+            const displayCompany = document.getElementById('display-company');
+            const loadingOverlay = document.getElementById('loading-overlay');
+            const sidebar = document.getElementById('sidebar');
+            const sharedHeader = document.getElementById('shared-header');
+            const pageTitle = document.getElementById('page-title');
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            
+            const screens = document.querySelectorAll('.screen');
+            const navLinks = document.querySelectorAll('.sidebar-nav .nav-link');
+            
+            // Password toggle
+            const togglePwd = document.getElementById('toggle-pwd');
+            const pwdInput = document.getElementById('password');
+            togglePwd.addEventListener('click', () => {
+                const type = pwdInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                pwdInput.setAttribute('type', type);
+            });
+
+            // Login Submit
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                // Show loading
+                loadingOverlay.classList.add('active');
+                
+                // Set company name in header
+                const selectedEmpresa = empSelect.value || "Empresa Não Selecionada";
+                displayCompany.textContent = selectedEmpresa;
+                
+                setTimeout(() => {
+                    loadingOverlay.classList.remove('active');
+                    
+                    // Hide login, show dashboard
+                    navigateToScreen('screen-dashboard', 'Dashboard de SST');
+                    
+                    // Show sidebar & header
+                    sidebar.classList.add('active');
+                    document.getElementById('main-content').classList.add('active');
+                    sharedHeader.style.display = 'block';
+                    
+                    // Make login unscrollable/hidden
+                    document.getElementById('screen-login').style.display = 'none';
+                    document.getElementById('screen-login').classList.remove('active');
+                }, 800);
+            });
+
+            // Sidebar Navigation
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    if (link.classList.contains('disabled')) {
+                        e.preventDefault();
+                        return;
+                    }
+                    
+                    // Update active state on links
+                    navLinks.forEach(l => {
+                        l.classList.remove('active');
+                        l.removeAttribute('aria-current');
+                    });
+                    link.classList.add('active');
+                    link.setAttribute('aria-current', 'page');
+                    
+                    const targetId = link.getAttribute('data-target');
+                    const title = link.textContent.trim();
+                    
+                    navigateToScreen(targetId, title);
+                    
+                    // Close mobile sidebar if open
+                    if(window.innerWidth <= 768) {
+                        sidebar.classList.remove('mobile-open');
+                    }
+                });
+            });
+
+            // Specific Buttons
+            const btnNovoFunc = document.getElementById('btn-novo-func');
+            const btnVoltarFunc = document.getElementById('btn-voltar-func');
+            const btnCancelarFunc = document.getElementById('btn-cancelar-func');
+            const btnSalvarFunc = document.getElementById('btn-salvar-func');
+
+            btnNovoFunc.addEventListener('click', () => {
+                navigateToScreen('screen-form', 'Novo Funcionário');
+            });
+
+            const backToFuncs = (e) => {
+                if(e) e.preventDefault();
+                navigateToScreen('screen-funcionarios', 'Funcionários');
+                // Ensure sidebar highlight is correct
+                navLinks.forEach(l => l.classList.remove('active'));
+                document.querySelector('[data-target="screen-funcionarios"]').classList.add('active');
+            };
+
+            btnVoltarFunc.addEventListener('click', backToFuncs);
+            btnCancelarFunc.addEventListener('click', backToFuncs);
+            btnSalvarFunc.addEventListener('click', backToFuncs); // Dummy save
+
+            // Mobile menu toggle
+            mobileMenuBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('mobile-open');
+            });
+
+            // Helper to switch screens
+            function navigateToScreen(targetId, title) {
+                screens.forEach(s => s.classList.remove('active'));
+                const targetScreen = document.getElementById(targetId);
+                if(targetScreen) {
+                    targetScreen.classList.add('active');
+                    pageTitle.textContent = title;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
